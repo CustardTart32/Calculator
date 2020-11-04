@@ -1,29 +1,131 @@
 import Grid from "@material-ui/core/Grid";
 import "./App.css";
 import { Paper } from "@material-ui/core";
-import { CalcButton, AltButton, ClearButton } from "./components/Buttons";
+import { ClearButton, ButtonRow } from "./components/Buttons";
+import { useState } from "react";
+import Screen from "./components/Screen";
+import { evaluate } from "mathjs";
 
-function ButtonRow(props) {
+function Buttons(props) {
   return (
-    <Grid container item alignItems="center" justify="space-between">
-      <CalcButton value={props.values[0]} />
-      <CalcButton value={props.values[1]} />
-      <CalcButton value={props.values[2]} />
-      <AltButton value={props.values[3]} />
-    </Grid>
+    <>
+      <ButtonRow
+        values={["7", "8", "9", "*"]}
+        handleClick={props.handleClick}
+      />
+      <ButtonRow
+        values={["4", "5", "6", "-"]}
+        handleClick={props.handleClick}
+      />
+      <ButtonRow
+        values={["1", "2", "3", "+"]}
+        handleClick={props.handleClick}
+      />
+      <ButtonRow
+        values={["0", ".", "=", "/"]}
+        handleClick={props.handleClick}
+      />
+    </>
   );
 }
 
 export default function Calculator() {
+  const [log, setLog] = useState("");
+  const [screen, setScreen] = useState("");
+  const [lastInput, setlastInput] = useState("Clear");
+
+  // Determines the type of button input from a string
+  let checkInput = (input) => {
+    let output;
+
+    switch (input) {
+      case "+":
+      case "-":
+      case "*":
+      case "/":
+        output = "arithExp";
+        break;
+      case "=":
+        output = "evalExp";
+        break;
+      case "Clear":
+        output = "clearExp";
+        break;
+      default:
+        output = "numExp";
+        break;
+    }
+
+    return output;
+  };
+
+  // Syntax Handler for [0-9 | . | +-*/] symbols
+  let handleStandardInput = (v) => {
+    switch (checkInput(lastInput)) {
+      case "arithExp":
+      case "clearExp":
+        // Allow only numeric expressions
+        if (checkInput(v) === "numExp") {
+          setScreen(screen + v);
+          setlastInput(v);
+        }
+        break;
+      case "numExp":
+        // Allow any expression
+        setScreen(screen + v);
+        setlastInput(v);
+        break;
+      case "evalExp":
+        switch (checkInput(v)) {
+          // If numeric expression, continue as normal
+          case "numExp":
+            setScreen(screen + v);
+            setLog("");
+            setlastInput(v);
+            break;
+          // If arith expression, use previous result
+          case "arithExp":
+            setScreen(log + v);
+            setLog("");
+            setlastInput(v);
+            break;
+          default:
+            break;
+        }
+        break;
+      default:
+        alert("Cases for button input violated");
+        break;
+    }
+  };
+
+  // Main function that handles a press of a button on a calculator
+  let handleClick = (v) => {
+    if (v === "=") {
+      try {
+        setLog(evaluate(screen));
+        setlastInput(v);
+        setScreen("");
+      } catch (e) {
+        console.log(e);
+      }
+    } else if (v === "Clear") {
+      setlastInput(v);
+      setLog("");
+      setScreen("");
+    } else {
+      handleStandardInput(v);
+    }
+  };
+
   return (
     <Grid container justify="center" alignItems="center" direction="column">
       <Grid item>
         <Paper
-          elevation={3}
+          elevation={4}
           style={{
             marginBottom: "10%",
-            marginTop: "10%",
-            width: "100%",
+            marginTop: "30%",
           }}
         >
           <Grid
@@ -40,15 +142,11 @@ export default function Calculator() {
               justify="space-between"
               style={{ backgroundColor: "grey" }}
             >
-              <h4> Log goes here </h4>
-              <h4> Console goes here </h4>
-              <ButtonRow values={["7", "8", "9", "*"]} />
-              <ButtonRow values={["4", "5", "6", "-"]} />
-              <ButtonRow values={["1", "2", "3", "+"]} />
-              <ButtonRow values={["0", ".", "=", "/"]} />
+              <Screen console={screen} log={log} />
+              <Buttons handleClick={handleClick} />
             </Grid>
             <Grid container item alignItems="stretch" justify="space-between">
-              <ClearButton value="Clear" />
+              <ClearButton value="Clear" handleClick={handleClick} />
             </Grid>
           </Grid>
         </Paper>

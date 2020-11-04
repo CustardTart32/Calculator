@@ -1,4 +1,15 @@
-import { Button } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
+
+function ButtonRow(props) {
+  return (
+    <Grid container item alignItems="center" justify="space-between">
+      <CalcButton value={props.values[0]} handleClick={props.handleClick} />
+      <CalcButton value={props.values[1]} handleClick={props.handleClick} />
+      <CalcButton value={props.values[2]} handleClick={props.handleClick} />
+      <AltButton value={props.values[3]} handleClick={props.handleClick} />
+    </Grid>
+  );
+}
 
 function CalcButton(props) {
   return (
@@ -11,6 +22,7 @@ function CalcButton(props) {
         color: "black",
         backgroundColor: "white",
       }}
+      onClick={() => props.handleClick(props.value)}
     >
       {props.value}
     </Button>
@@ -27,6 +39,7 @@ function AltButton(props) {
         width: "75px",
         borderRadius: 0,
       }}
+      onClick={() => props.handleClick(props.value)}
     >
       {props.value}
     </Button>
@@ -43,10 +56,11 @@ function ClearButton(props) {
         width: "300px",
         borderRadius: 0,
       }}
+      onClick={() => props.handleClick(props.value)}
     >
       {props.value}
     </Button>
   );
 }
 
-export { CalcButton, ClearButton, AltButton };
+export { CalcButton, ClearButton, AltButton, ButtonRow };
