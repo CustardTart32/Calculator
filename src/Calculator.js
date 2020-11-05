@@ -91,7 +91,7 @@ export default function Calculator() {
         setlastInput(v);
         setCurrent("");
       } catch (e) {
-        console.result(e);
+        console.log(e);
       }
     } else if (v === "Clear") {
       setlastInput(v);
