@@ -1,4 +1,5 @@
 import { Button, Grid } from "@material-ui/core";
+import "../App.css";
 
 function Buttons(props) {
   return (
@@ -56,11 +57,12 @@ function AltButton(props) {
   return (
     <Button
       variant="contained"
-      color="secondary"
       style={{
         height: "75px",
         width: "75px",
         borderRadius: 0,
+        color: "white",
+        backgroundColor: "#3A4D33",
       }}
       onClick={() => props.handleClick(props.value)}
     >
@@ -73,11 +75,12 @@ function ClearButton(props) {
   return (
     <Button
       variant="contained"
-      color="primary"
       style={{
         height: "75px",
         width: "300px",
         borderRadius: 0,
+        backgroundColor: "#4D333A",
+        color: "white",
       }}
       onClick={() => props.handleClick(props.value)}
     >

@@ -1,8 +1,20 @@
 body {
-  background-image: url(./images/wood-background.jpg);
+  background-image: url(./images/blue_light_line_6581.jpg);
 }
 
 #container {
   text-align: "center";
-  /* background-color: white; */
+}
+
+#screen {
+  padding-right: 25px;
+  height: 110px;
+  color: white;
+  background-color: #333a4d;
+}
+
+.button {
+  height: 75px;
+  width: 300px;
+  border-radius: 0;
 }

@@ -7,8 +7,8 @@ import Screen from "./components/Screen";
 import { evaluate } from "mathjs";
 
 export default function Calculator() {
-  const [log, setLog] = useState("");
-  const [screen, setScreen] = useState("");
+  const [result, setResult] = useState("");
+  const [current, setCurrent] = useState("");
   const [lastInput, setlastInput] = useState("Clear");
 
   // Determines the type of syntax from a button press
@@ -45,16 +45,16 @@ export default function Calculator() {
       case "clearExp":
         // Allow only numeric expressions
         if (checkInput(v) === "numExp") {
-          setScreen(screen + v);
+          setCurrent(current + v);
           setlastInput(v);
         }
         break;
       case "numExp":
         // Allow any expression
         if (checkInput(v) === "arithExp") {
-          setScreen(screen + " " + v + " ");
+          setCurrent(current + " " + v + " ");
         } else {
-          setScreen(screen + v);
+          setCurrent(current + v);
         }
         setlastInput(v);
         break;
@@ -62,14 +62,14 @@ export default function Calculator() {
         switch (checkInput(v)) {
           // If numeric expression, continue as normal
           case "numExp":
-            setScreen(screen + v);
-            setLog("");
+            setCurrent(current + v);
+            setResult("");
             setlastInput(v);
             break;
           // If arith expression, use previous result
           case "arithExp":
-            setScreen(log + " " + v + " ");
-            setLog("");
+            setCurrent(result + " " + v + " ");
+            setResult("");
             setlastInput(v);
             break;
           default:
@@ -87,16 +87,16 @@ export default function Calculator() {
     if (v === "=") {
       // Exception handler for mathematical evaluation
       try {
-        setLog(evaluate(screen));
+        setResult(evaluate(current));
         setlastInput(v);
-        setScreen("");
+        setCurrent("");
       } catch (e) {
-        console.log(e);
+        console.result(e);
       }
     } else if (v === "Clear") {
       setlastInput(v);
-      setLog("");
-      setScreen("");
+      setResult("");
+      setCurrent("");
     } else {
       handleStandardInput(v);
     }
@@ -119,9 +119,8 @@ export default function Calculator() {
               direction="column"
               alignItems="center"
               justify="space-between"
-              style={{ backgroundColor: "grey" }}
             >
-              <Screen console={screen} log={log} />
+              <Screen current={current} result={result} />
               <Buttons handleClick={handleClick} />
             </Grid>
             <Grid container item alignItems="stretch" justify="space-between">
