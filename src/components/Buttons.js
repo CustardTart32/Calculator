@@ -1,5 +1,28 @@
 import { Button, Grid } from "@material-ui/core";
 
+function Buttons(props) {
+  return (
+    <>
+      <ButtonRow
+        values={["7", "8", "9", "*"]}
+        handleClick={props.handleClick}
+      />
+      <ButtonRow
+        values={["4", "5", "6", "-"]}
+        handleClick={props.handleClick}
+      />
+      <ButtonRow
+        values={["1", "2", "3", "+"]}
+        handleClick={props.handleClick}
+      />
+      <ButtonRow
+        values={["0", ".", "=", "/"]}
+        handleClick={props.handleClick}
+      />
+    </>
+  );
+}
+
 function ButtonRow(props) {
   return (
     <Grid container item alignItems="center" justify="space-between">
@@ -63,4 +86,4 @@ function ClearButton(props) {
   );
 }
 
-export { CalcButton, ClearButton, AltButton, ButtonRow };
+export { Buttons, ClearButton };

@@ -1,40 +1,17 @@
 import Grid from "@material-ui/core/Grid";
 import "./App.css";
 import { Paper } from "@material-ui/core";
-import { ClearButton, ButtonRow } from "./components/Buttons";
+import { Buttons, ClearButton } from "./components/Buttons";
 import { useState } from "react";
 import Screen from "./components/Screen";
 import { evaluate } from "mathjs";
-
-function Buttons(props) {
-  return (
-    <>
-      <ButtonRow
-        values={["7", "8", "9", "*"]}
-        handleClick={props.handleClick}
-      />
-      <ButtonRow
-        values={["4", "5", "6", "-"]}
-        handleClick={props.handleClick}
-      />
-      <ButtonRow
-        values={["1", "2", "3", "+"]}
-        handleClick={props.handleClick}
-      />
-      <ButtonRow
-        values={["0", ".", "=", "/"]}
-        handleClick={props.handleClick}
-      />
-    </>
-  );
-}
 
 export default function Calculator() {
   const [log, setLog] = useState("");
   const [screen, setScreen] = useState("");
   const [lastInput, setlastInput] = useState("Clear");
 
-  // Determines the type of button input from a string
+  // Determines the type of syntax from a button press
   let checkInput = (input) => {
     let output;
 
@@ -60,6 +37,8 @@ export default function Calculator() {
   };
 
   // Syntax Handler for [0-9 | . | +-*/] symbols
+  // This handler works by checking the current symbol against the most recently accepted symbol.
+  // Only valid expressions are allowed and any invalid expressions are simply ignored.
   let handleStandardInput = (v) => {
     switch (checkInput(lastInput)) {
       case "arithExp":
@@ -72,7 +51,11 @@ export default function Calculator() {
         break;
       case "numExp":
         // Allow any expression
-        setScreen(screen + v);
+        if (checkInput(v) === "arithExp") {
+          setScreen(screen + " " + v + " ");
+        } else {
+          setScreen(screen + v);
+        }
         setlastInput(v);
         break;
       case "evalExp":
@@ -85,7 +68,7 @@ export default function Calculator() {
             break;
           // If arith expression, use previous result
           case "arithExp":
-            setScreen(log + v);
+            setScreen(log + " " + v + " ");
             setLog("");
             setlastInput(v);
             break;
@@ -102,6 +85,7 @@ export default function Calculator() {
   // Main function that handles a press of a button on a calculator
   let handleClick = (v) => {
     if (v === "=") {
+      // Exception handler for mathematical evaluation
       try {
         setLog(evaluate(screen));
         setlastInput(v);
@@ -128,12 +112,7 @@ export default function Calculator() {
             marginTop: "30%",
           }}
         >
-          <Grid
-            container
-            direction="column"
-            alignItems="center"
-            justify="stretch"
-          >
+          <Grid container direction="column" alignItems="center">
             <Grid
               container
               item
